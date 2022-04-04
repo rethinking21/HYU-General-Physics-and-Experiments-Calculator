@@ -82,7 +82,7 @@ class Chapter_4:
 
 #----작성할 부분---------
 
-my_case = Chapter_4(v_inclination_list, mean_a_list, have_matplotlib=have_matplotlib)
+my_case = Chapter_4(m_pendulum=m_pendulum, m_projectile=m_projectile, l_pendulum=l_pendulum, degree_list=degree_list, measure_v_list=measure_v_list, have_matplotlib=have_matplotlib)
 my_case.printResult(show_color=False)
 
 print("-"*30)
