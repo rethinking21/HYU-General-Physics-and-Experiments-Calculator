@@ -1,15 +1,19 @@
 package main
 
-import "fyne.io/fyne/v2"
+import (
+	"HYU-Physics-and-Experiments-Calculator/Experiment/gravity"
+
+	"fyne.io/fyne/v2"
+)
 
 type ExperimentInfo struct {
 	Index int
 	Name  string
-	Run   func(fyne.App)
+	Run   func(fyne.Window) fyne.CanvasObject
 }
 
 var Experiments = []ExperimentInfo{
-	{1, "중력가속도🍎", nil},
+	{1, "중력가속도🍎", gravity.Run},
 	{2, "포사체 운동🏹", nil},
 	{3, "마찰계수🪨", nil},
 	{4, "운동량 및 에너지 보존🏃", nil},

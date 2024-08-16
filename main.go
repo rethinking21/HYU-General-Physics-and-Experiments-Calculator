@@ -10,37 +10,52 @@ import (
 )
 
 type AppInfo struct {
-	app fyne.App
+	app     fyne.App
+	window  fyne.Window
+	content *fyne.Container
 }
 
-var MainApp AppInfo
+var (
+	mainApp AppInfo
+	buttons []fyne.CanvasObject = []fyne.CanvasObject{}
+	Canvas  *fyne.Container
+)
 
 func main() {
-	MainApp.app = app.New()
+	mainApp.app = app.New()
+	mainApp.window = mainApp.app.NewWindow("실사구시 도우미")
+	Canvas = container.NewStack()
+	buttonInit()
 	OpenMainWindow()
-	MainApp.app.Run()
+
+	mainApp.window.Resize(fyne.NewSize(700, 500))
+	mainApp.window.SetFixedSize(true)
+	mainApp.window.ShowAndRun()
 }
 
-func OpenMainWindow() {
-	w := MainApp.app.NewWindow("실사구시 도우미")
-	w.SetContent(container.NewVBox(
-		widget.NewLabel("실험 목록을 선택하세요🧪"),
-		CreateExperimentButtonBox(3, w),
-	))
-	w.Resize(fyne.NewSize(500, 200))
-	w.SetFixedSize(true)
-	w.Show()
-}
-
-func CreateExperimentButtonBox(column int, window fyne.Window) fyne.CanvasObject {
-	var Buttons []fyne.CanvasObject = []fyne.CanvasObject{}
+func buttonInit() {
 	for _, info := range Experiments {
-		Buttons = append(Buttons, widget.NewButton(
+		buttons = append(buttons, widget.NewButton(
 			fmt.Sprintf("%d. %s", info.Index, info.Name),
 			func() {
-
+				Canvas.Objects = nil
+				if info.Run != nil {
+					Canvas.Objects = []fyne.CanvasObject{info.Run(mainApp.window)}
+				} else {
+					Canvas.Objects = []fyne.CanvasObject{widget.NewLabel("🚧 Work in Progress... 🚧")}
+				}
 			},
 		))
 	}
-	return container.NewGridWithColumns(column, Buttons...)
+}
+
+func OpenMainWindow() {
+	mainApp.content = container.NewBorder(
+		widget.NewLabel("실험 목록을 선택하세요🧪"),
+		nil,
+		container.NewVScroll(container.NewGridWithColumns(1, buttons...)),
+		nil,
+		Canvas,
+	)
+	mainApp.window.SetContent(mainApp.content)
 }
